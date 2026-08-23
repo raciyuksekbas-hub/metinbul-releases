@@ -1,61 +1,66 @@
 # 🔎 MetinBul
 
-**Bilgisayarınızdaki belgelerin içinde arayın.**
+> **Bilgisayarınızdaki belgelerin içinde aradığınızı saniyeler içinde bulun.**
 
-Yüzlerce Word, PDF veya UDF dosyanız var ve aradığınız bir cümlenin **hangi belgenin içinde geçtiğini** hatırlamıyor musunuz?
+MetinBul; **DOC, DOCX, PDF ve UDF** belgelerinin yalnızca dosya adlarında değil, **metin içeriklerinde de arama** yapan, Windows ve macOS için hazırlanmış masaüstü uygulamasıdır.
 
-**MetinBul**, bilgisayarınızdaki belgeleri yerel olarak indeksler ve yalnızca dosya adlarında değil, **belgelerin metin içeriklerinde de hızlı arama** yapmanızı sağlar.
+## 🚀 Ne işe yarar?
 
-> Aradığınız kelimeyi veya ifadeyi yazın; MetinBul hangi belgelerde geçtiğini bulsun.
+Yüzlerce dosyanız var ve aradığınız cümlenin hangi belgede geçtiğini hatırlamıyor musunuz?
 
-## ⬇️ İndir
+MetinBul bilgisayarınızdaki erişilebilir belgeleri indeksler. Aradığınız kelimeyi veya ifadeyi yazarsınız; hangi belgelerde geçtiğini size gösterir.
 
-### macOS
-**Apple Silicon (M1 / M2 / M3 / M4 ve sonrası)**  
-[📦 MetinBul-0.1.0-mac.dmg](https://github.com/raciyuksekbas-hub/metinbul-releases/releases/download/v0.1.0/MetinBul-0.1.0-mac.dmg)
+Örneğin belgede **“Yargıtay Hukuk Genel Kurulu”** yazıyorsa yalnızca `Yargıtay` değil, `gıtay` gibi kelimenin ortasından başlayan ifadelerle de arama yapabilirsiniz. 🔍
 
-### Windows
-**Windows x64**  
-[📦 MetinBul-Setup-0.1.0.exe](https://github.com/raciyuksekbas-hub/metinbul-releases/releases/download/v0.1.0/MetinBul-Setup-0.1.0.exe)
+## ✨ Öne çıkanlar
 
-➡️ [Tüm sürüm notlarını ve dosyaları görüntüle](https://github.com/raciyuksekbas-hub/metinbul-releases/releases/tag/v0.1.0)
+- ⚡ **Hızlı tam metin arama** — belge içeriklerinde arayın.
+- 🧩 **DOC, DOCX, PDF ve UDF desteği**
+- 🔎 **Kelime ortasından arama** — ifadenin başını hatırlamak zorunda değilsiniz.
+- 🇹🇷 **Türkçe karakter uyumlu** arama
+- 💻 **Windows x64 ve macOS Apple Silicon** desteği
+- 🌗 **Koyu / Açık tema**
+- 🔒 **Tamamen yerel çalışma** — belge içerikleri harici bir sunucuya gönderilmez.
+- ♻️ **Otomatik indeksleme** — erişilebilir belgeler uygulama tarafından taranır.
 
-## ✨ Neler yapar?
+## 📥 İndir
 
-- 📄 **DOC, DOCX, PDF ve UDF** belgelerini tarar.
-- 🔍 Belgelerin yalnızca adında değil, **içeriğinde** arama yapar.
-- ⚡ Kelimenin başını hatırlamanız gerekmez: `Yargıtay` geçen bir belgede `gıtay` araması da sonuç verebilir.
-- 🇹🇷 Türkçe karakterlerle uyumlu arama sunar.
-- 🖥️ Bilgisayarınızdaki erişilebilir belgeleri otomatik olarak indeksler.
-- 🌗 **Koyu ve Açık tema** seçenekleri sunar.
-- 🔄 Yeni sürüm yayımlandığında güncelleme kontrolü yapabilir.
-- 🔒 Belgelerinizi harici bir sunucuya göndermez; arama ve indeksleme **cihazınızda** gerçekleşir.
+### 🍎 macOS — Apple Silicon
+
+**[MetinBul-0.1.0-mac.dmg indir](https://github.com/raciyuksekbas-hub/metinbul-releases/releases/download/v0.1.0/MetinBul-0.1.0-mac.dmg)**
+
+M1, M2, M3 ve sonraki Apple Silicon Mac modelleri için.
+
+### 🪟 Windows — x64
+
+**[MetinBul-Setup-0.1.0.exe indir](https://github.com/raciyuksekbas-hub/metinbul-releases/releases/download/v0.1.0/MetinBul-Setup-0.1.0.exe)**
+
+Windows 10 / 11 (64-bit) için.
 
 ## 🧭 Nasıl kullanılır?
 
-1. MetinBul'u kurun ve açın.
-2. İlk açılışta erişilebilir belgeleriniz otomatik olarak indekslenir.
-3. Arama kutusuna hatırladığınız kelimeyi, cümleyi veya ifade parçasını yazın.
-4. Eşleşen belgeleri ve ilgili metin parçalarını anında görüntüleyin.
+1. 📦 Uygulamayı indirip kurun.
+2. ⏳ MetinBul erişebildiği belgeleri otomatik olarak indekslesin.
+3. 🔍 Arama kutusuna kelime veya ifadeyi yazın.
+4. 📄 Eşleşen belgeleri ve ilgili metin parçalarını görüntüleyin.
 
-## 🔐 Gizlilik
+Hepsi bu.
 
-MetinBul'un temel çalışma modeli **yereldir**. Belge içerikleri arama amacıyla harici bir sunucuya yüklenmez. İndeks ve arama verileri cihazınızda tutulur.
+## 🛡️ Gizlilik
 
-## ℹ️ Bilinen sınırlama
+MetinBul **local-first** çalışır. Belge içerikleri cihazınızda işlenir ve arama amacıyla harici bir sunucuya gönderilmez.
 
-MetinBul v0.1.0'da **OCR bulunmamaktadır**. Bu nedenle yalnızca görüntüden oluşan taranmış PDF dosyalarının içeriği aranamaz. Metin katmanı bulunan PDF'ler normal şekilde aranabilir.
+## ⚠️ Bilmeniz gerekenler
 
-## ⚠️ Kurulum notu
-
-MetinBul henüz kod imzalama sertifikasıyla dağıtılmadığı için Windows SmartScreen veya macOS Gatekeeper ilk çalıştırmada güvenlik uyarısı gösterebilir.
+- 🖼️ Taranmış/görsel PDF dosyalarında **OCR bulunmamaktadır**. Bu nedenle yalnızca gerçek metin katmanı bulunan PDF'ler aranabilir.
+- 🛡️ Uygulama henüz kod imzalama sertifikasıyla dağıtılmadığı için Windows SmartScreen veya macOS Gatekeeper ilk çalıştırmada uyarı gösterebilir.
 
 ## 💬 Geri bildirim
 
-Hata bildirimi, öneri veya kullanım deneyiminiz için:  
-**raci@yuksekbas.av.tr**
+Bir hata mı buldunuz, bir öneriniz mi var?
+
+📧 **raci@yuksekbas.av.tr**
 
 ---
 
-**MetinBul v0.1.0** · Windows & macOS  
-© 2026 Raci Çetin Yüksekbaş. Tüm hakları saklıdır.
+**MetinBul v0.1.0** · Windows & macOS · Yerel belge arama 🔎
