@@ -467,7 +467,17 @@ function isPathExcluded(candidatePath, excludedPaths = []) {
   if (!excludedPaths || excludedPaths.length === 0) return false;
   return excludedPaths.some((excluded) => isPathOrSubpath(excluded, candidatePath));
 }
-function shouldSkipFile(filename) {
+function isDatalessPlaceholder(stats) {
+  if (!stats) return false;
+  if (process.platform === "darwin" && typeof stats.flags === "number") {
+    const SF_DATALESS = 1073741824;
+    if ((stats.flags & SF_DATALESS) !== 0) {
+      return true;
+    }
+  }
+  return false;
+}
+function shouldSkipFile(filename, stats) {
   const lower = filename.toLowerCase();
   if (filename.startsWith("~$")) {
     return true;
@@ -478,27 +488,39 @@ function shouldSkipFile(filename) {
   if (filename.startsWith("._") || lower === ".ds_store" || lower === "thumbs.db") {
     return true;
   }
+  if (stats && isDatalessPlaceholder(stats)) {
+    return true;
+  }
   return false;
 }
-function shouldSkipDirectory(dirName, fullPath, excludedPaths = []) {
+function shouldSkipDirectory(dirName, fullPath, excludedPaths = [], explicitIncludes = []) {
+  if (isPathExcluded(fullPath, excludedPaths)) {
+    return true;
+  }
+  const isExplicitBranch = explicitIncludes.length > 0 && explicitIncludes.some(
+    (inc) => isPathOrSubpath(fullPath, inc) || isPathOrSubpath(inc, fullPath)
+  );
   const lowerName = dirName.toLowerCase();
+  const home = os.homedir();
+  const libraryPath = path3.join(home, "Library");
+  if (isExplicitBranch) {
+    if (lowerName === ".git" || lowerName === ".trash" || lowerName === ".trashes") {
+      return true;
+    }
+    return false;
+  }
   if (EXCLUDED_DIR_NAMES.has(lowerName)) {
     return true;
   }
   if (lowerName.endsWith(".app")) {
     return true;
   }
-  const home = os.homedir();
-  const libraryPath = path3.join(home, "Library");
   if (fullPath.toLowerCase() === libraryPath.toLowerCase()) {
-    return true;
-  }
-  if (isPathExcluded(fullPath, excludedPaths)) {
     return true;
   }
   return false;
 }
-async function scanDirectory(dirPath, visitedDirs = /* @__PURE__ */ new Set(), excludedPaths = []) {
+async function scanDirectory(dirPath, visitedDirs = /* @__PURE__ */ new Set(), excludedPaths = [], explicitIncludes = []) {
   const results = [];
   let realRoot;
   try {
@@ -529,7 +551,7 @@ async function scanDirectory(dirPath, visitedDirs = /* @__PURE__ */ new Set(), e
       }
       const fullPath = path3.join(currentDir, entry.name);
       if (entry.isDirectory()) {
-        if (shouldSkipDirectory(entry.name, fullPath, excludedPaths)) {
+        if (shouldSkipDirectory(entry.name, fullPath, excludedPaths, explicitIncludes)) {
           continue;
         }
         try {
@@ -544,7 +566,7 @@ async function scanDirectory(dirPath, visitedDirs = /* @__PURE__ */ new Set(), e
         try {
           const stat = await fs7.promises.stat(fullPath);
           if (stat.isDirectory()) {
-            if (!shouldSkipDirectory(entry.name, fullPath, excludedPaths)) {
+            if (!shouldSkipDirectory(entry.name, fullPath, excludedPaths, explicitIncludes)) {
               const realSub = await fs7.promises.realpath(fullPath);
               if (!visitedDirs.has(realSub)) {
                 visitedDirs.add(realSub);
@@ -552,6 +574,9 @@ async function scanDirectory(dirPath, visitedDirs = /* @__PURE__ */ new Set(), e
               }
             }
           } else if (stat.isFile()) {
+            if (isDatalessPlaceholder(stat)) {
+              continue;
+            }
             const ext = path3.extname(entry.name).toLowerCase();
             if (SUPPORTED_EXTENSIONS.has(ext)) {
               results.push({
@@ -570,6 +595,9 @@ async function scanDirectory(dirPath, visitedDirs = /* @__PURE__ */ new Set(), e
         if (SUPPORTED_EXTENSIONS.has(ext)) {
           try {
             const stats = await fs7.promises.stat(fullPath);
+            if (isDatalessPlaceholder(stats)) {
+              continue;
+            }
             results.push({
               path: fullPath,
               filename: entry.name,
@@ -586,12 +614,12 @@ async function scanDirectory(dirPath, visitedDirs = /* @__PURE__ */ new Set(), e
   await walk(dirPath);
   return results;
 }
-async function scanDirectories(dirPaths, excludedPaths = []) {
+async function scanDirectories(dirPaths, excludedPaths = [], explicitIncludes = []) {
   const seenPaths = /* @__PURE__ */ new Set();
   const visitedDirs = /* @__PURE__ */ new Set();
   const combined = [];
   for (const dir of dirPaths) {
-    const files = await scanDirectory(dir, visitedDirs, excludedPaths);
+    const files = await scanDirectory(dir, visitedDirs, excludedPaths, explicitIncludes);
     for (const file of files) {
       if (!seenPaths.has(file.path)) {
         seenPaths.add(file.path);
@@ -626,6 +654,67 @@ function buildFtsQuery(userQuery) {
   }
   return `"${clean}"`;
 }
+function generateCustomSnippet(content, userQuery, budget = 180) {
+  if (!content || !content.trim()) {
+    return "";
+  }
+  const cleanContent = content.replace(/[\r\n\t\s]+/g, " ").trim();
+  const cleanQuery = userQuery ? userQuery.trim() : "";
+  if (!cleanQuery) {
+    return cleanContent.length > budget ? cleanContent.substring(0, budget) + "\u2026" : cleanContent;
+  }
+  const lowerContentTr = cleanContent.toLocaleLowerCase("tr-TR");
+  const lowerQueryTr = cleanQuery.toLocaleLowerCase("tr-TR");
+  let matchIndex = lowerContentTr.indexOf(lowerQueryTr);
+  let matchLength = cleanQuery.length;
+  if (matchIndex === -1) {
+    const lowerContentStd = cleanContent.toLowerCase();
+    const lowerQueryStd = cleanQuery.toLowerCase();
+    matchIndex = lowerContentStd.indexOf(lowerQueryStd);
+  }
+  if (matchIndex === -1) {
+    if (cleanContent.length <= budget) {
+      return cleanContent;
+    }
+    const endSpace = cleanContent.lastIndexOf(" ", budget);
+    const end2 = endSpace > 0 ? endSpace : budget;
+    return cleanContent.substring(0, end2) + "\u2026";
+  }
+  const matchStart = matchIndex;
+  const matchEnd = matchIndex + matchLength;
+  const matchedText = cleanContent.substring(matchStart, matchEnd);
+  const remainingBudget = Math.max(0, budget - matchLength);
+  const leftBudget = Math.floor(remainingBudget * 0.45);
+  const rightBudget = remainingBudget - leftBudget;
+  let rawStart = Math.max(0, matchStart - leftBudget);
+  let rawEnd = Math.min(cleanContent.length, matchEnd + rightBudget);
+  if (matchStart - leftBudget < 0) {
+    const extra = leftBudget - matchStart;
+    rawEnd = Math.min(cleanContent.length, rawEnd + extra);
+  } else if (matchEnd + rightBudget > cleanContent.length) {
+    const extra = matchEnd + rightBudget - cleanContent.length;
+    rawStart = Math.max(0, rawStart - extra);
+  }
+  let start = rawStart;
+  if (start > 0) {
+    const spaceAfter = cleanContent.indexOf(" ", start);
+    if (spaceAfter !== -1 && spaceAfter < matchStart) {
+      start = spaceAfter + 1;
+    }
+  }
+  let end = rawEnd;
+  if (end < cleanContent.length) {
+    const spaceBefore = cleanContent.lastIndexOf(" ", end);
+    if (spaceBefore !== -1 && spaceBefore > matchEnd) {
+      end = spaceBefore;
+    }
+  }
+  const leftPart = cleanContent.substring(start, matchStart);
+  const rightPart = cleanContent.substring(matchEnd, end);
+  const hasLeftEllipsis = start > 0;
+  const hasRightEllipsis = end < cleanContent.length;
+  return `${hasLeftEllipsis ? "\u2026" : ""}${leftPart}<mark>${matchedText}</mark>${rightPart}${hasRightEllipsis ? "\u2026" : ""}`;
+}
 function search(query, appDb, limit = 100, scopeOrExcluded) {
   if (!query || !query.trim()) {
     return [];
@@ -654,8 +743,8 @@ function search(query, appDb, limit = 100, scopeOrExcluded) {
         d.path,
         d.filename,
         d.extension,
-        d.index_status,
-        snippet(documents_fts, -1, '<mark>', '</mark>', '\u2026', 15) AS snippet
+        d.content,
+        d.index_status
       FROM documents_fts
       JOIN documents d ON d.id = documents_fts.rowid
       WHERE documents_fts MATCH ?
@@ -669,12 +758,13 @@ function search(query, appDb, limit = 100, scopeOrExcluded) {
       if (!isDocumentInScope(r.path, mode, includedPaths, excludedPaths)) {
         continue;
       }
+      const snippet = generateCustomSnippet(r.content, query) || r.filename;
       results.push({
         id: r.id,
         filename: r.filename,
         path: r.path,
         extension: r.extension,
-        snippet: r.snippet || r.filename,
+        snippet,
         index_status: r.index_status
       });
       if (results.length >= limit) {
@@ -758,7 +848,7 @@ async function discoverSearchRoots() {
 }
 
 // src/search/indexer.ts
-async function indexFolders(folders, appDb, onProgress, excludedPaths = []) {
+async function indexFolders(folders, appDb, onProgress, excludedPaths = [], explicitIncludes = []) {
   const summary = {
     scanned: 0,
     indexed: 0,
@@ -771,7 +861,7 @@ async function indexFolders(folders, appDb, onProgress, excludedPaths = []) {
     return summary;
   }
   onProgress?.({ total: 0, current: 0, status: "scanning" });
-  const scannedFiles = await scanDirectories(folders, excludedPaths);
+  const scannedFiles = await scanDirectories(folders, excludedPaths, explicitIncludes);
   summary.scanned = scannedFiles.length;
   const scannedPathSet = new Set(scannedFiles.map((f) => f.path));
   const allDbDocs = appDb.getAllDocuments();
@@ -848,16 +938,16 @@ async function indexFolders(folders, appDb, onProgress, excludedPaths = []) {
 async function indexAccessibleDocuments(appDb, onProgress) {
   const mode = appDb.getSearchScopeMode();
   const excludedPaths = appDb.getExcludedFolders();
+  const userIncludes = appDb.getIncludedFolders();
   if (mode === "selected") {
-    const customIncludes = appDb.getIncludedFolders();
-    if (customIncludes.length === 0) {
+    if (userIncludes.length === 0) {
       onProgress?.({ total: 0, current: 0, status: "completed" });
       return { scanned: 0, indexed: 0, skipped: 0, failed: 0, removed: 0 };
     }
-    return await indexFolders(customIncludes, appDb, onProgress, excludedPaths);
+    return await indexFolders(userIncludes, appDb, onProgress, excludedPaths, userIncludes);
   } else {
     const defaultRoots = await discoverSearchRoots();
-    return await indexFolders(defaultRoots, appDb, onProgress, excludedPaths);
+    return await indexFolders(defaultRoots, appDb, onProgress, excludedPaths, userIncludes);
   }
 }
 

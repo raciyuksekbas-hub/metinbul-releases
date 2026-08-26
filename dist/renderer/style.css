@@ -724,6 +724,15 @@ body {
   accent-color: var(--accent-teal);
 }
 
+.search-scope-hint {
+  font-size: 11px;
+  line-height: 1.4;
+  color: var(--text-dim);
+  margin-top: 4px;
+  padding-top: 4px;
+  border-top: 1px dashed var(--border-subtle);
+}
+
 .scope-group {
   display: flex;
   flex-direction: column;

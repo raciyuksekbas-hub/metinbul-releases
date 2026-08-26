@@ -268,6 +268,11 @@
                 <span>Sadece Belirli Klas\xF6rler</span>
               </label>
             </div>
+            ${mode === "all" ? `
+              <div class="search-scope-hint">
+                Bilgisayar\u0131n\u0131zdaki eri\u015Filebilir belge konumlar\u0131nda arama yap\u0131l\u0131r. Sistem ve ge\xE7ici dosya alanlar\u0131 taranmaz.
+              </div>
+            ` : ""}
           </div>
 
           ${mode === "selected" ? `
