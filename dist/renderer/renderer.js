@@ -496,8 +496,12 @@
   window.api.onProgress(async (progress) => {
     if (progress.status === "scanning") {
       statusText.textContent = "Belgeleriniz taran\u0131yor\u2026";
+      footerText.textContent = "Taran\u0131yor\u2026";
     } else if (progress.status === "indexing") {
-      statusText.textContent = `Belgeleriniz indeksleniyor\u2026 (${progress.current}/${progress.total})`;
+      const formattedTotal = progress.total.toLocaleString("tr-TR");
+      const formattedCurrent = progress.current.toLocaleString("tr-TR");
+      statusText.textContent = `\u0130ndeksleniyor\u2026 (${formattedCurrent}/${formattedTotal})`;
+      footerText.textContent = `\u0130ndeksleniyor\u2026 ${formattedTotal} belge`;
     } else if (progress.status === "completed") {
       await updateStatusFromDb();
       if (searchInput.value.trim()) {

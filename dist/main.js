@@ -259,6 +259,7 @@ var AppDatabase = class {
 import * as fs7 from "fs";
 import * as path3 from "path";
 import * as os from "os";
+import { execFile } from "child_process";
 
 // src/extractors/index.ts
 import * as path2 from "path";
@@ -425,6 +426,46 @@ async function extract(filePath) {
 }
 
 // src/scanner/scanner.ts
+var SF_DATALESS = 1073741824;
+var DARWIN_STAT_BATCH_SIZE = 200;
+function parseDarwinStatFlagsOutput(output, filePaths) {
+  const flagsByPath = /* @__PURE__ */ new Map();
+  for (const line of output.split(/\r?\n/)) {
+    const match = line.trim().match(/^(\d+):(0x)?([0-9a-f]+)$/i);
+    if (!match) continue;
+    const fileIndex = Number(match[1]) - 1;
+    const filePath = filePaths[fileIndex];
+    const flags = Number.parseInt(match[3], 16);
+    if (filePath && Number.isFinite(flags)) {
+      flagsByPath.set(filePath, flags);
+    }
+  }
+  return flagsByPath;
+}
+function readDarwinStatFlagsChunk(filePaths) {
+  return new Promise((resolve3) => {
+    execFile(
+      "/usr/bin/stat",
+      ["-L", "-f", "%@:%#Xf", "--", ...filePaths],
+      { encoding: "utf8", timeout: 5e3, maxBuffer: 1024 * 1024 },
+      (_error, stdout) => resolve3(parseDarwinStatFlagsOutput(String(stdout || ""), filePaths))
+    );
+  });
+}
+async function readDarwinFileFlags(filePaths) {
+  const flagsByPath = /* @__PURE__ */ new Map();
+  if (process.platform !== "darwin" || filePaths.length === 0) {
+    return flagsByPath;
+  }
+  for (let offset = 0; offset < filePaths.length; offset += DARWIN_STAT_BATCH_SIZE) {
+    const chunk = filePaths.slice(offset, offset + DARWIN_STAT_BATCH_SIZE);
+    const chunkFlags = await readDarwinStatFlagsChunk(chunk);
+    for (const [filePath, flags] of chunkFlags) {
+      flagsByPath.set(filePath, flags);
+    }
+  }
+  return flagsByPath;
+}
 var EXCLUDED_DIR_NAMES = /* @__PURE__ */ new Set([
   ".git",
   ".svn",
@@ -467,17 +508,12 @@ function isPathExcluded(candidatePath, excludedPaths = []) {
   if (!excludedPaths || excludedPaths.length === 0) return false;
   return excludedPaths.some((excluded) => isPathOrSubpath(excluded, candidatePath));
 }
-function isDatalessPlaceholder(stats) {
-  if (!stats) return false;
-  if (process.platform === "darwin" && typeof stats.flags === "number") {
-    const SF_DATALESS = 1073741824;
-    if ((stats.flags & SF_DATALESS) !== 0) {
-      return true;
-    }
-  }
-  return false;
+function isDatalessPlaceholder(stats, fallbackFlags) {
+  const nativeFlags = stats && typeof stats.flags === "number" ? stats.flags : void 0;
+  const flags = nativeFlags ?? fallbackFlags;
+  return typeof flags === "number" && (flags & SF_DATALESS) !== 0;
 }
-function shouldSkipFile(filename, stats) {
+function shouldSkipFile(filename, stats, fallbackFlags) {
   const lower = filename.toLowerCase();
   if (filename.startsWith("~$")) {
     return true;
@@ -488,7 +524,7 @@ function shouldSkipFile(filename, stats) {
   if (filename.startsWith("._") || lower === ".ds_store" || lower === "thumbs.db") {
     return true;
   }
-  if (stats && isDatalessPlaceholder(stats)) {
+  if (isDatalessPlaceholder(stats, fallbackFlags)) {
     return true;
   }
   return false;
@@ -545,6 +581,13 @@ async function scanDirectory(dirPath, visitedDirs = /* @__PURE__ */ new Set(), e
     } catch {
       return;
     }
+    const supportedFilePaths = entries.filter((entry) => {
+      if (!entry.isFile() && !entry.isSymbolicLink() || shouldSkipFile(entry.name)) {
+        return false;
+      }
+      return SUPPORTED_EXTENSIONS.has(path3.extname(entry.name).toLowerCase());
+    }).map((entry) => path3.join(currentDir, entry.name));
+    const darwinFlags = await readDarwinFileFlags(supportedFilePaths);
     for (const entry of entries) {
       if (shouldSkipFile(entry.name)) {
         continue;
@@ -574,11 +617,12 @@ async function scanDirectory(dirPath, visitedDirs = /* @__PURE__ */ new Set(), e
               }
             }
           } else if (stat.isFile()) {
-            if (isDatalessPlaceholder(stat)) {
-              continue;
-            }
             const ext = path3.extname(entry.name).toLowerCase();
             if (SUPPORTED_EXTENSIONS.has(ext)) {
+              const fallbackFlags = darwinFlags.get(fullPath);
+              if (process.platform === "darwin" && fallbackFlags === void 0 || isDatalessPlaceholder(stat, fallbackFlags)) {
+                continue;
+              }
               results.push({
                 path: fullPath,
                 filename: entry.name,
@@ -595,7 +639,8 @@ async function scanDirectory(dirPath, visitedDirs = /* @__PURE__ */ new Set(), e
         if (SUPPORTED_EXTENSIONS.has(ext)) {
           try {
             const stats = await fs7.promises.stat(fullPath);
-            if (isDatalessPlaceholder(stats)) {
+            const fallbackFlags = darwinFlags.get(fullPath);
+            if (process.platform === "darwin" && fallbackFlags === void 0 || isDatalessPlaceholder(stats, fallbackFlags)) {
               continue;
             }
             results.push({
@@ -658,8 +703,8 @@ function generateCustomSnippet(content, userQuery, budget = 180) {
   if (!content || !content.trim()) {
     return "";
   }
-  const cleanContent = content.replace(/[\r\n\t\s]+/g, " ").trim();
-  const cleanQuery = userQuery ? userQuery.trim() : "";
+  const cleanContent = content.normalize("NFC").replace(/[\r\n\t\s]+/g, " ").trim();
+  const cleanQuery = userQuery ? userQuery.normalize("NFC").trim() : "";
   if (!cleanQuery) {
     return cleanContent.length > budget ? cleanContent.substring(0, budget) + "\u2026" : cleanContent;
   }
