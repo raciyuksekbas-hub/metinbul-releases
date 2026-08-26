@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="tr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MetinBul</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="brand">
+        <h1 class="logo"><span class="logo-regular">Metin</span><span class="logo-bold">Bul</span></h1>
+      </div>
+      <div class="header-actions">
+        <button id="btn-search-areas" class="btn btn-secondary" title="Arama alanlarını yapılandır">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+          </svg>
+          <span>Arama Alanları</span>
+        </button>
+        <button id="btn-rescan" class="btn btn-secondary" title="Bilgisayardaki belgeleri yeniden tara">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="23 4 23 10 17 10"></polyline>
+            <polyline points="1 20 1 14 7 14"></polyline>
+            <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+          </svg>
+          <span>Yeniden Tara</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Optional Notification / Update Banner -->
+    <div id="update-banner" class="update-banner hidden">
+      <div class="update-banner-content">
+        <span class="update-dot"></span>
+        <span id="update-banner-text" class="update-banner-text">Yeni sürüm kullanılabilir</span>
+        <button id="btn-view-update" class="btn-update-action" type="button">Güncellemeyi Gör</button>
+      </div>
+      <button id="btn-dismiss-update" class="btn-icon update-dismiss" type="button" title="Kapat">✕</button>
+    </div>
+
+    <!-- Search Section -->
+    <section class="search-section">
+      <div class="search-box">
+        <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <input type="text" id="search-input" placeholder="Belgelerinizde ara…" autofocus autocomplete="off" spellcheck="false">
+        <button id="btn-clear-search" class="btn-icon hidden" title="Temizle">✕</button>
+      </div>
+    </section>
+
+    <!-- Status Line -->
+    <div class="status-bar">
+      <span id="status-text" class="status-text">Hazırlanıyor…</span>
+    </div>
+
+    <!-- Search Results -->
+    <main class="results-container">
+      <div id="results-header" class="results-header hidden">
+        <span id="results-count">0 sonuç</span>
+      </div>
+      <div id="results-list" class="results-list">
+        <div class="placeholder-state">
+          <p>Belgelerinizde aramak istediğiniz ifadeyi yazın.</p>
+        </div>
+      </div>
+    </main>
+
+    <!-- Thin Footer Status Bar -->
+    <footer class="app-footer">
+      <div class="footer-status-row">
+        <span id="footer-text" class="footer-text"></span>
+        <div class="footer-actions">
+          <button id="action-theme-toggle" class="footer-action-link" type="button" title="Temayı değiştir">Tema: Koyu</button>
+          <span class="footer-divider">•</span>
+          <button id="action-search-areas" class="footer-action-link" type="button">Arama Alanları</button>
+          <span class="footer-divider">•</span>
+          <button id="action-about" class="footer-action-link" type="button">Hakkında</button>
+          <button id="action-copyright" class="footer-action-link" type="button">Telif</button>
+          <button id="action-feedback" class="footer-action-link" type="button">Geri Bildirim</button>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Compact Popover / Dialog -->
+    <div id="popover-overlay" class="popover-overlay hidden">
+      <div class="popover-card" role="dialog" aria-modal="true">
+        <button id="popover-close" class="popover-close-btn" title="Kapat" aria-label="Kapat">✕</button>
+        <div id="popover-body" class="popover-body"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="renderer.js"></script>
+</body>
+</html>

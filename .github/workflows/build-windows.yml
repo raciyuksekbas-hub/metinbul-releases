@@ -1,0 +1,174 @@
+name: Windows Package Runner
+
+on:
+  push:
+    branches: [windows-build-runner]
+  workflow_dispatch:
+
+jobs:
+  build-windows:
+    runs-on: windows-2022
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Package Windows installer (NSIS x64)
+        run: npx electron-builder --win --x64 --publish=never
+
+      - name: List release output
+        shell: pwsh
+        run: Get-ChildItem -Recurse release | Select-Object FullName, Length
+
+      - name: Smoke test - unpacked executable exists
+        shell: pwsh
+        run: |
+          $exe = Get-ChildItem -Path "release\win-unpacked" -Filter "MetinBul.exe" -ErrorAction Stop
+          if (-not $exe) { throw "MetinBul.exe not found in win-unpacked output" }
+          Write-Host "Found executable: $($exe.FullName) ($($exe.Length) bytes)"
+
+      - name: Smoke test - launch and clean exit
+        shell: pwsh
+        run: |
+          $exePath = "release\win-unpacked\MetinBul.exe"
+          $proc = Start-Process -FilePath $exePath -ArgumentList "--no-sandbox", "--disable-gpu" -PassThru
+          Start-Sleep -Seconds 8
+          if ($proc.HasExited) {
+            throw "MetinBul.exe exited early with code $($proc.ExitCode)"
+          }
+          Write-Host "MetinBul.exe launched successfully, PID $($proc.Id)"
+          Stop-Process -Id $proc.Id -Force
+          Start-Sleep -Seconds 2
+          $stillRunning = Get-Process -Id $proc.Id -ErrorAction SilentlyContinue
+          if ($stillRunning) {
+            throw "MetinBul.exe process did not exit cleanly"
+          }
+          Write-Host "MetinBul.exe process exited cleanly"
+
+      - name: Smoke test - install, shortcut check, launch installed exe, and uninstall
+        shell: pwsh
+        run: |
+          $installer = Get-ChildItem -Path "release" -Filter "MetinBul-Setup-*.exe" | Select-Object -First 1
+          if (-not $installer) { throw "Installer not found in release/" }
+          Write-Host "Running installer silently: $($installer.FullName)"
+          
+          $installDir = "C:\MetinBulInstallDir"
+          $process = Start-Process -FilePath $installer.FullName -ArgumentList "/S", "/D=$installDir" -PassThru -Wait
+          Start-Sleep -Seconds 5
+          
+          if (-not (Test-Path "$installDir\MetinBul.exe")) {
+             $localAppDir = "$env:LOCALAPPDATA\Programs\metinbul"
+             $localAppDir2 = "$env:LOCALAPPDATA\Programs\MetinBul"
+             if (Test-Path "$localAppDir\MetinBul.exe") {
+                $installDir = $localAppDir
+             } elseif (Test-Path "$localAppDir2\MetinBul.exe") {
+                $installDir = $localAppDir2
+             } else {
+                $found = Get-ChildItem -Path "C:\Users" -Filter "MetinBul.exe" -Recurse -ErrorAction SilentlyContinue
+                if ($found) {
+                   $installDir = $found[0].DirectoryName
+                } else {
+                   throw "MetinBul.exe was not installed at $installDir or local programs folder!"
+                }
+             }
+          }
+          
+          Write-Host "MetinBul installed at: $installDir"
+          Get-ChildItem -Path $installDir | Select-Object Name, Length
+          
+          $shortcuts = @()
+          $desktopShortcut = "$env:USERPROFILE\Desktop\MetinBul.lnk"
+          $startMenuShortcutDir = "$env:APPDATA\Microsoft\Windows\Start Menu\Programs"
+          if (Test-Path $desktopShortcut) { $shortcuts += $desktopShortcut }
+          $startMenuMatches = Get-ChildItem -Path $startMenuShortcutDir -Filter "*MetinBul*.lnk" -Recurse -ErrorAction SilentlyContinue
+          foreach ($m in $startMenuMatches) { $shortcuts += $m.FullName }
+          
+          if ($shortcuts.Count -gt 0) {
+             $wshShell = New-Object -ComObject WScript.Shell
+             foreach ($s in $shortcuts) {
+                $lnk = $wshShell.CreateShortcut($s)
+                Write-Host "Shortcut: $s -> Target: $($lnk.TargetPath)"
+                if (-not (Test-Path $lnk.TargetPath)) {
+                   throw "Shortcut target path '$($lnk.TargetPath)' does not exist!"
+                }
+             }
+          }
+          
+          $installedExe = "$installDir\MetinBul.exe"
+          Write-Host "Launching installed executable: $installedExe"
+          $proc = Start-Process -FilePath $installedExe -ArgumentList "--no-sandbox", "--disable-gpu" -PassThru
+          Start-Sleep -Seconds 10
+          if ($proc.HasExited) {
+             throw "Installed MetinBul.exe exited early with code $($proc.ExitCode)"
+          }
+          Write-Host "Installed app running with PID $($proc.Id)"
+          Stop-Process -Id $proc.Id -Force
+          Start-Sleep -Seconds 2
+          
+          $uninstaller = "$installDir\Uninstall MetinBul.exe"
+          if (-not (Test-Path $uninstaller)) {
+             $uninstaller = Get-ChildItem -Path $installDir -Filter "*Uninstall*.exe" | Select-Object -First 1 | ForEach-Object { $_.FullName }
+          }
+          if ($uninstaller) {
+             Write-Host "Running uninstaller silently: $uninstaller"
+             Start-Process -FilePath $uninstaller -ArgumentList "/S" -PassThru -Wait
+             Start-Sleep -Seconds 5
+             if (Test-Path "$installDir\MetinBul.exe") {
+                throw "Uninstaller failed to delete MetinBul.exe!"
+             }
+             Write-Host "Uninstaller successfully cleaned up."
+          }
+
+      - name: Stage Windows installer to deliverable branch
+        shell: pwsh
+        run: |
+          $installer = Get-ChildItem -Path "release" -Filter "MetinBul-Setup-*.exe" | Select-Object -First 1
+          if (-not $installer) { throw "Installer not found in release/" }
+
+          $hash = (Get-FileHash -Path $installer.FullName -Algorithm SHA256).Hash
+          Write-Host "Original installer SHA256: $hash ($($installer.Length) bytes)"
+          Set-Content -Path "release/installer.sha256" -Value "$hash  $($installer.Name)"
+
+          # Split into 50MB parts to comply with GitHub file limit
+          $chunkSize = 50MB
+          $buffer = New-Object byte[] $chunkSize
+          $inStream = [System.IO.File]::OpenRead($installer.FullName)
+          $part = 1
+          while (($read = $inStream.Read($buffer, 0, $buffer.Length)) -gt 0) {
+              $partPath = "$($installer.FullName).part$part"
+              $outStream = [System.IO.File]::Create($partPath)
+              $outStream.Write($buffer, 0, $read)
+              $outStream.Close()
+              Write-Host "Created part $partPath ($read bytes)"
+              $part++
+          }
+          $inStream.Close()
+
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git checkout --orphan windows-binary-deliverable
+          git rm -rf .
+          git add release/*.part* release/installer.sha256 -f
+          git commit -m "deliver: Windows installer binary parts (${{ github.sha }})"
+          git push origin windows-binary-deliverable --force
+
+      - name: Upload NSIS installer artifact
+        uses: actions/upload-artifact@v4
+        continue-on-error: true
+        with:
+          name: MetinBul-windows-installer
+          path: release/MetinBul-Setup-*.exe
+          if-no-files-found: error

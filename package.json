@@ -1,0 +1,83 @@
+{
+  "name": "metinbul",
+  "productName": "MetinBul",
+  "version": "0.2.0",
+  "description": "DOC, DOCX, PDF ve UDF belgelerinde yerel metin arama utility'si",
+  "main": "dist/main.js",
+  "type": "module",
+  "scripts": {
+    "dev": "node scripts/build.mjs && electron dist/main.js",
+    "build": "node scripts/build.mjs",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "package:mac": "npm run build && electron-builder --mac --publish=never",
+    "package:win": "npm run build && electron-builder --win --publish=never",
+    "package": "npm run package:mac"
+  },
+  "keywords": [
+    "search",
+    "desktop",
+    "fts5",
+    "docx",
+    "pdf",
+    "udf",
+    "doc"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "adm-zip": "^0.5.16",
+    "better-sqlite3": "^13.0.3",
+    "fast-xml-parser": "^5.4.1",
+    "mammoth": "^1.11.0",
+    "pdf-parse": "^2.4.5",
+    "word-extractor": "^1.0.4"
+  },
+  "devDependencies": {
+    "@electron/rebuild": "^3.7.2",
+    "@types/adm-zip": "^0.5.7",
+    "@types/better-sqlite3": "^7.6.13",
+    "@types/node": "^24.13.0",
+    "@types/pdf-parse": "^1.1.5",
+    "electron": "^43.4.1",
+    "electron-builder": "^26.15.3",
+    "esbuild": "^0.28.2",
+    "png-to-ico": "^3.0.2",
+    "typescript": "^5.9.3",
+    "vitest": "^4.1.11"
+  },
+  "build": {
+    "appId": "com.metinbul.app",
+    "productName": "MetinBul",
+    "compression": "maximum",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "dist/**/*",
+      "package.json"
+    ],
+    "asarUnpack": [
+      "node_modules/better-sqlite3/**/*"
+    ],
+    "mac": {
+      "target": "dmg",
+      "category": "public.app-category.productivity",
+      "icon": "assets/icon.icns"
+    },
+    "dmg": {
+      "artifactName": "${productName}-${version}-mac.dmg"
+    },
+    "win": {
+      "target": "nsis",
+      "icon": "assets/icon.ico",
+      "executableName": "MetinBul"
+    },
+    "nsis": {
+      "artifactName": "${productName}-Setup-${version}.exe",
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "shortcutName": "MetinBul"
+    }
+  }
+}
