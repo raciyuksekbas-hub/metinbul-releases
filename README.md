@@ -91,6 +91,29 @@ MetinBul **local-first** çalışır. Belge içerikleri cihazınızda işlenir v
 - ☁️ İçeriği cihazda bulunmayan bulut placeholder dosyaları indekslenmez ve otomatik olarak indirilmez.
 - 🛡️ Uygulama henüz kod imzalama sertifikasıyla dağıtılmadığı için Windows SmartScreen veya macOS Gatekeeper ilk çalıştırmada uyarı gösterebilir.
 
+---
+
+## Meslektaşlarımdan Bir Ricam Var
+
+Kıymetli meslektaşlarım,
+
+Ben yazılımcı değilim. Yalnızca yapay zekâ kullanmayı seven; vibe coding (sezgisel yazılım/yazılımsama) yöntemiyle, yani geliştiricilerin tek tek kod satırları yazmak yerine kendi anadillerinde ne yapmak istediklerini yapay zekâya anlatarak yazılım geliştirdiği yeni nesil yaklaşımdan yararlanıp kendimin ve meslektaşlarımın işine yarayacak araçlar üretmeye çalışan bir hukukçuyum.
+
+Bu nedenle MetinBul'un hataları, eksikleri veya geliştirilmesi gereken yönleri olabilir. Uygulamayı kullandıkça karşılaştığınız sorunları, dileklerinizi, önerilerinizi ve eleştirilerinizi benimle paylaşırsanız, MetinBul'u birlikte daha iyi bir hale getirebiliriz.
+
+Uygulamayı sizlere ücretsiz olarak sunuyorum. Bunun karşılığında tek beklentim; beni yetiştiren müteveffa anneannem Cemile Salman’ın aziz ruhu ve hatırası için, kendi inancınız çerçevesinde bir dua etmenizdir.
+
+Sevgiler,  
+Raci
+
+---
+
+## Uygulamanın Temel Prensiplerinden Bir Tanesi
+
+**Geliştirdiğim uygulamalar yerel olarak çalışan masaüstü uygulamalarıdır. Kullanım verileri, telemetri, analitik veriler, belge içerikleri veya diğer kullanıcı verileri bana ya da üçüncü kişilere gönderilmez; merkezi olarak toplanmaz, saklanmaz veya işlenmez. Uygulamaların temel işlevleri ve veri işleme süreçleri kullanıcının kendi cihazında gerçekleşir.**
+
+---
+
 ## 💬 Geri bildirim
 
 Bir hata mı buldunuz, bir öneriniz mi var?
