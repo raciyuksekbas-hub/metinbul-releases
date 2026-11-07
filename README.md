@@ -69,13 +69,13 @@ Hepsi bu.
 
 ### 🍎 macOS — Apple Silicon
 
-**[MetinBul-0.2.1-mac.dmg indir](https://github.com/raciyuksekbas-hub/metinbul-releases/releases/download/v0.2.1/MetinBul-0.2.1-mac.dmg)**
+**[MetinBul-0.4.0-mac.dmg indir](https://github.com/raciyuksekbas-hub/metinbul-releases/releases/download/v0.4.0/MetinBul-0.4.0-mac.dmg)**
 
 M1, M2, M3 ve sonraki Apple Silicon Mac modelleri için.
 
 ### 🪟 Windows — x64
 
-**[MetinBul-Setup-0.2.1.exe indir](https://github.com/raciyuksekbas-hub/metinbul-releases/releases/download/v0.2.1/MetinBul-Setup-0.2.1.exe)**
+**[MetinBul-Setup-0.4.0-x64.exe indir](https://github.com/raciyuksekbas-hub/metinbul-releases/releases/download/v0.4.0/MetinBul-Setup-0.4.0-x64.exe)**
 
 Windows 10 / 11 (64-bit) için.
 
@@ -122,4 +122,4 @@ Bir hata mı buldunuz, bir öneriniz mi var?
 
 ---
 
-**MetinBul v0.2.1** · Windows & macOS · Yerel belge arama 🔎
+**MetinBul v0.4.0** · Windows & macOS · Yerel belge arama 🔎
