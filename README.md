@@ -19,7 +19,7 @@ MetinBul bilgisayarınızdaki erişilebilir belgeleri indeksler. Aradığınız 
 - 🔎 **Kelime ortasından arama** — ifadenin başını hatırlamak zorunda değilsiniz.
 - 🇹🇷 **Türkçe karakter uyumlu** arama
 - 🚀 **Sistem geneli Hızlı Arama** — MetinBul çalışırken herhangi bir uygulamadayken `Option + Space` (macOS) veya `Ctrl + Shift + M` (Windows) ile küçük bir arama penceresi açın.
-- 🖥️ **Arka planda çalışmaya devam eder (macOS)** — ana pencereyi kırmızı X ile kapatsanız da MetinBul arka planda kalır ve Hızlı Arama kullanılabilir olmaya devam eder; `Cmd + Q` uygulamadan tamamen çıkar.
+- 🖥️ **Arka planda çalışmaya devam eder** — ana pencereyi X ile kapatsanız da MetinBul arka planda kalır; Hızlı Arama ve otomatik güncellemeler sürer. macOS'ta `Cmd + Q`, Windows'ta bildirim alanındaki simgeye sağ tıklayıp **MetinBul'dan Çık** uygulamadan tamamen çıkar.
 - 🛡️ **Tek instance koruması** — aynı anda birden fazla MetinBul açılmaz.
 - 🧵 **Gerçek arka plan indeksleme** — tarama ayrı bir worker üzerinde yürütülür; mevcut indeks, yeni tarama sürerken de aranabilir durumda kalır.
 - 📁 **Arama Alanları** — tüm bilgisayarı tarayın veya aramayı belirli klasörlerle sınırlandırın; ilk kullanımda arama alanınızı seçebilirsiniz.
@@ -53,7 +53,7 @@ MetinBul açıkken, herhangi bir uygulamadayken sistem genelindeki kısayolla k�
 
 Aramanızı yazın, yön tuşlarıyla sonuçlarda gezinin, `Enter` ile belgeyi açın, `Esc` ile Hızlı Arama'yı kapatın.
 
-macOS'ta ana pencereyi kırmızı X ile kapatsanız da MetinBul arka planda çalışmaya devam eder ve Hızlı Arama kullanılabilir kalır. `Cmd + Q` uygulamadan tamamen çıkar.
+Ana pencereyi X ile kapatsanız da MetinBul arka planda çalışmaya devam eder ve Hızlı Arama kullanılabilir kalır. macOS'ta `Cmd + Q` uygulamadan tamamen çıkar. Windows'ta MetinBul görev çubuğunun sağındaki bildirim alanında durur; simgesine tıklayınca pencere geri gelir, sağ tıklayıp **MetinBul'dan Çık**'ı seçince uygulama kapanır. Windows yeni simgeleri önce **^** okunun altına gizleyebilir.
 
 ## 🧭 Nasıl kullanılır?
 
@@ -91,11 +91,11 @@ MetinBul **local-first** çalışır. Belge içerikleri cihazınızda işlenir v
 
 ## ⚠️ Bilmeniz gerekenler
 
-- 🖼️ Taranmış/görsel PDF dosyalarında **OCR bulunmamaktadır**. Bu nedenle yalnızca gerçek metin katmanı bulunan PDF'ler aranabilir.
+- 🖼️ Taranmış PDF'lerin metni **metin tanıma (OCR)** ile okunur. macOS'ta ek bir şey gerekmez. Windows'ta Windows'un Türkçe metin tanıma bileşeni gerekir; yüklü değilse **Ayarlar › İndeks**'teki düğme yönetici izni ve internet bağlantısıyla yükler. Metin tanıma her güncellemede en fazla 3 dakika çalışır; çok sayıda taranmış belge birkaç güncellemede okunur.
 - 📊 Excel/XLSX desteği henüz bulunmamaktadır.
 - 🔤 3 karakterden kısa içerik sorguları mevcut arama motorunun kapsamı dışındadır.
 - ☁️ İçeriği cihazda bulunmayan bulut placeholder dosyaları indekslenmez ve otomatik olarak indirilmez.
-- 🛡️ Uygulama henüz kod imzalama sertifikasıyla dağıtılmadığı için Windows SmartScreen veya macOS Gatekeeper ilk çalıştırmada uyarı gösterebilir.
+- 🛡️ macOS paketi imzalıdır ve Apple onayından geçmiştir. Windows kurulum dosyası henüz imzasız olduğu için Windows SmartScreen ilk çalıştırmada uyarı gösterebilir; **Ek bilgi › Yine de çalıştır** ile devam edebilirsiniz.
 
 ---
 
