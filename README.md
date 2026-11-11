@@ -81,9 +81,9 @@ Windows 10 / 11 (64-bit) için.
 
 ### 🧾 Kaynak kodu
 
-**[MetinBul-0.4.2-kaynak-kodu.zip indir](https://github.com/raciyuksekbas-hub/metinbul-releases/releases/download/v0.4.2/MetinBul-0.4.2-kaynak-kodu.zip)**
+**[Kaynak kodunu GitHub'da görüntüle](https://github.com/raciyuksekbas-hub/metinbul-source)**
 
-MetinBul'un kaynak kodu MIT lisansıyla açıktır.
+MetinBul'un kaynak kodu MIT lisansıyla açıktır. Bu sürümün kodunu zip olarak da indirebilirsiniz: [MetinBul-0.4.2-kaynak-kodu.zip](https://github.com/raciyuksekbas-hub/metinbul-releases/releases/download/v0.4.2/MetinBul-0.4.2-kaynak-kodu.zip)
 
 ## 🛡️ Gizlilik
 
