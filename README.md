@@ -69,13 +69,13 @@ Hepsi bu.
 
 ### 🍎 macOS — Apple Silicon
 
-**[MetinBul-0.4.2-mac.dmg indir](https://github.com/raciyuksekbas-hub/metinbul-releases/releases/download/v0.4.2/MetinBul-0.4.2-mac.dmg)**
+**[MetinBul-0.4.3-mac.dmg indir](https://github.com/raciyuksekbas-hub/metinbul-releases/releases/download/v0.4.3/MetinBul-0.4.3-mac.dmg)**
 
 M1, M2, M3 ve sonraki Apple Silicon Mac modelleri için.
 
 ### 🪟 Windows — x64
 
-**[MetinBul-Setup-0.4.2-x64.exe indir](https://github.com/raciyuksekbas-hub/metinbul-releases/releases/download/v0.4.2/MetinBul-Setup-0.4.2-x64.exe)**
+**[MetinBul-Setup-0.4.3-x64.exe indir](https://github.com/raciyuksekbas-hub/metinbul-releases/releases/download/v0.4.3/MetinBul-Setup-0.4.3-x64.exe)**
 
 Windows 10 / 11 (64-bit) için.
 
@@ -83,11 +83,13 @@ Windows 10 / 11 (64-bit) için.
 
 **[Kaynak kodunu GitHub'da görüntüle](https://github.com/raciyuksekbas-hub/metinbul-source)**
 
-MetinBul'un kaynak kodu MIT lisansıyla açıktır. Bu sürümün kodunu zip olarak da indirebilirsiniz: [MetinBul-0.4.2-kaynak-kodu.zip](https://github.com/raciyuksekbas-hub/metinbul-releases/releases/download/v0.4.2/MetinBul-0.4.2-kaynak-kodu.zip)
+MetinBul'un kaynak kodu MIT lisansıyla açıktır. Bu sürümün kodunu zip olarak da indirebilirsiniz: [MetinBul-0.4.3-kaynak-kodu.zip](https://github.com/raciyuksekbas-hub/metinbul-releases/releases/download/v0.4.3/MetinBul-0.4.3-kaynak-kodu.zip)
 
 ## 🛡️ Gizlilik
 
 MetinBul **local-first** çalışır. Belge içerikleri cihazınızda işlenir ve arama amacıyla harici bir sunucuya gönderilmez. Arama sorgularınız kaydedilmez; arama geçmişi veya telemetri oluşturulmaz.
+
+MetinBul'un bilgisayarınızda tuttuğu arama dizini **şifrelidir**. Anahtarı macOS'ta Anahtar Zinciri'nde, Windows'ta Windows'un kendi korumasında saklanır.
 
 ## ⚠️ Bilmeniz gerekenler
 
@@ -128,4 +130,4 @@ Bir hata mı buldunuz, bir öneriniz mi var?
 
 ---
 
-**MetinBul v0.4.2** · Windows & macOS · Yerel belge arama 🔎
+**MetinBul v0.4.3** · Windows & macOS · Yerel belge arama 🔎
