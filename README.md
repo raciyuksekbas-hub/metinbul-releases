@@ -25,7 +25,8 @@ MetinBul bilgisayarınızdaki erişilebilir belgeleri indeksler. Aradığınız 
 - 📁 **Arama Alanları** — tüm bilgisayarı tarayın veya aramayı belirli klasörlerle sınırlandırın; ilk kullanımda arama alanınızı seçebilirsiniz.
 - 🚫 **Klasör hariç tutma** — indekslenmesini istemediğiniz alanları dışarıda bırakın.
 - 💾 **Harici disk desteği** — USB, HDD ve SSD içindeki seçtiğiniz klasörlerde arayın.
-- ☁️ **Google Drive Desktop desteği** — yerel/indirilebilir dosyaları arayın; içeriği cihazda bulunmayan bulut dosyalarını indirmeden atlar ve kaç belgenin bu nedenle atlandığını açıkça bildirir.
+- ☁️ **Bulut klasörleri** — iCloud, OneDrive ve macOS'taki Google Drive'da içeriği cihazda bulunmayan dosyaları indirmeden atlar ve kaç belgenin bu nedenle atlandığını açıkça bildirir. Windows'taki Google Drive diski bunu ayırt ettirmez; ayrıntı aşağıda.
+- 🔡 **Türkçeye uygun arama** — İ/ı doğru eşleşir; şapkalı ve şapkasız yazımlar (hâkim/hakim, şikâyet/şikayet, vekâlet/vekalet) birbirini bulur.
 - 💬 **Tam ifade arama** — sorgunun tamamını tırnak içine alarak birebir eşleşme arayın: `"doktor"`
 - ✂️ **Daha anlamlı sonuç önizlemeleri** — bir belgede birden fazla eşleşme varsa, tek belge kartında üçe kadar anlamlı metin parçası ve toplam eşleşme sayısı gösterilir.
 - ↕️ **Sıralama seçenekleri** — sonuçları son değiştirilme tarihine (varsayılan), en eskiye veya alaka düzeyine göre sıralayın.
@@ -42,14 +43,18 @@ Aramayı **Bilgisayarın Tümü** üzerinde sürdürebilir veya **Sadece Belirli
 
 İstediğiniz klasörleri aramaya dahil edebilir, istemediklerinizi ayrıca hariç tutabilirsiniz. USB, harici HDD ve SSD içindeki klasörler de normal **Klasör Ekle** akışıyla kullanılabilir.
 
-Google Drive Desktop gibi macOS FileProvider tabanlı alanlarda, kullanıcı tarafından seçilen yerel/indirilebilir dosyalar aranabilir; online-only dosyalar istemsiz indirme başlatılmadan atlanır.
+Windows'ta **Bilgisayarın Tümü**, kullanıcı klasörünüzü ve bilgisayarın diğer yerel disklerini (D:, E: gibi) kapsar. Programların veri klasörleri (AppData), Windows ve program klasörleri, geri dönüşüm kutusu, ağ sürücüleri ve Google Drive diski taranmaz.
+
+Google Drive Desktop gibi macOS FileProvider tabanlı alanlarda, kullanıcı tarafından seçilen yerel/indirilebilir dosyalar aranabilir; online-only dosyalar istemsiz indirme başlatılmadan atlanır. Windows'ta Google Drive kendi diski (genellikle G:) üzerinden çalışır ve hangi dosyanın bilgisayarda olduğunu göstermez: o diskten bir klasör eklerseniz belgeler okundukça internetten indirilir. MetinBul böyle bir klasörü eklemeden önce uyarır.
 
 ## ⚡ Hızlı Arama
 
 MetinBul açıkken, herhangi bir uygulamadayken sistem genelindeki kısayolla küçük bir arama penceresi çağırabilirsiniz:
 
 - 🍎 macOS: `Option + Space`
-- 🪟 Windows: `Ctrl + Shift + M`
+- 🪟 Windows: `Ctrl + Alt + Space`
+
+Kısayolu kurulum ekranında ya da **Ayarlar › Genel**'de değiştirebilirsiniz.
 
 Aramanızı yazın, yön tuşlarıyla sonuçlarda gezinin, `Enter` ile belgeyi açın, `Esc` ile Hızlı Arama'yı kapatın.
 
@@ -69,13 +74,13 @@ Hepsi bu.
 
 ### 🍎 macOS — Apple Silicon
 
-**[MetinBul-0.4.4-mac.dmg indir](https://github.com/raciyuksekbas-hub/metinbul-releases/releases/download/v0.4.4/MetinBul-0.4.4-mac.dmg)**
+**[MetinBul-0.5.0-mac.dmg indir](https://github.com/raciyuksekbas-hub/metinbul-releases/releases/download/v0.5.0/MetinBul-0.5.0-mac.dmg)**
 
 M1, M2, M3 ve sonraki Apple Silicon Mac modelleri için.
 
 ### 🪟 Windows — x64
 
-**[MetinBul-Setup-0.4.4-x64.exe indir](https://github.com/raciyuksekbas-hub/metinbul-releases/releases/download/v0.4.4/MetinBul-Setup-0.4.4-x64.exe)**
+**[MetinBul-Setup-0.5.0-x64.exe indir](https://github.com/raciyuksekbas-hub/metinbul-releases/releases/download/v0.5.0/MetinBul-Setup-0.5.0-x64.exe)**
 
 Windows 10 / 11 (64-bit) için.
 
@@ -83,7 +88,7 @@ Windows 10 / 11 (64-bit) için.
 
 **[Kaynak kodunu GitHub'da görüntüle](https://github.com/raciyuksekbas-hub/metinbul-source)**
 
-MetinBul'un kaynak kodu MIT lisansıyla açıktır. Bu sürümün kodunu zip olarak da indirebilirsiniz: [MetinBul-0.4.4-kaynak-kodu.zip](https://github.com/raciyuksekbas-hub/metinbul-releases/releases/download/v0.4.4/MetinBul-0.4.4-kaynak-kodu.zip)
+MetinBul'un kaynak kodu MIT lisansıyla açıktır. Bu sürümün kodunu zip olarak da indirebilirsiniz: [MetinBul-0.5.0-kaynak-kodu.zip](https://github.com/raciyuksekbas-hub/metinbul-releases/releases/download/v0.5.0/MetinBul-0.5.0-kaynak-kodu.zip)
 
 ## 🛡️ Gizlilik
 
@@ -96,7 +101,7 @@ MetinBul'un bilgisayarınızda tuttuğu arama dizini **şifrelidir**. Anahtarı 
 - 🖼️ Taranmış PDF'lerin metni **metin tanıma (OCR)** ile okunur. macOS'ta ek bir şey gerekmez. Windows'ta Windows'un Türkçe metin tanıma bileşeni gerekir; yüklü değilse **Ayarlar › İndeks**'teki düğme yönetici izni ve internet bağlantısıyla yükler. Metin tanıma her güncellemede en fazla 3 dakika çalışır; çok sayıda taranmış belge birkaç güncellemede okunur.
 - 📊 Excel/XLSX desteği henüz bulunmamaktadır.
 - 🔤 3 karakterden kısa içerik sorguları mevcut arama motorunun kapsamı dışındadır.
-- ☁️ İçeriği cihazda bulunmayan bulut placeholder dosyaları indekslenmez ve otomatik olarak indirilmez.
+- ☁️ İçeriği cihazda bulunmayan bulut placeholder dosyaları (iCloud, OneDrive, macOS'ta Google Drive) indekslenmez ve otomatik olarak indirilmez. Windows'taki Google Drive diski bunun dışındadır (yukarıya bakın).
 - 🛡️ macOS paketi imzalıdır ve Apple onayından geçmiştir. Windows kurulum dosyası henüz imzasız olduğu için Windows SmartScreen ilk çalıştırmada uyarı gösterebilir; **Ek bilgi › Yine de çalıştır** ile devam edebilirsiniz.
 
 ---
@@ -130,4 +135,4 @@ Bir hata mı buldunuz, bir öneriniz mi var?
 
 ---
 
-**MetinBul v0.4.4** · Windows & macOS · Yerel belge arama 🔎
+**MetinBul v0.5.0** · Windows & macOS · Yerel belge arama 🔎
